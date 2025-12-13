@@ -1,0 +1,12 @@
+@import url(./assets/vendor/normalize.css);
+
+@import url(./assets/blocks/page.css);
+
+@import url(./components/Header/Header.css);
+@import url(./components/Main/Main.css);
+@import url(./components/Footer/Footer.css);
+
+@import url(./assets/blocks/profile.css);
+@import url(./components/Card/Card.css);
+
+@import url(./components/Popup/Popup.css);

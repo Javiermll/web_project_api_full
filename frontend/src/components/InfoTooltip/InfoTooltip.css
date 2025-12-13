@@ -1,0 +1,58 @@
+.info-tooltip__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.info-tooltip {
+  position: relative;
+  width: 340px;
+  max-width: 90%;
+  background: #fff;
+  border-radius: 6px;
+  padding: 32px 28px 40px;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: inherit;
+}
+.info-tooltip__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #000;
+}
+.info-tooltip__icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 auto 24px;
+  box-sizing: border-box;
+}
+.info-tooltip__icon_success {
+  border: 2px solid #2ecc71;
+  color: #2ecc71;
+}
+.info-tooltip__icon_error {
+  border: 2px solid #e74c3c;
+  color: #e74c3c;
+}
+.info-tooltip__message {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  line-height: 1.3;
+  word-break: break-word;
+}

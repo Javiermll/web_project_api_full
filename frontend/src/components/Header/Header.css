@@ -1,0 +1,196 @@
+.header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  border-bottom: 2px solid #fff;
+  position: relative;
+}
+
+.header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: inherit;
+}
+
+.header__logo {
+  max-width: 180px;
+  margin: 0; /* sin margen inferior */
+}
+
+.header__nav {
+  display: flex;
+  align-self: end;
+  gap: 24px;
+  margin: 0;
+}
+
+/* Nav de desktop para usuario logueado */
+.header__nav--desktop {
+  display: flex;
+  align-items: center;
+  gap: 32px; /* Aumenta el espacio entre email y botón */
+}
+
+.header__email {
+  color: #fff;
+  margin-right: 8px;
+  font-size: 14px;
+  word-break: break-all;
+  margin: 0; /* sin margen extra en desktop */
+}
+
+/* Navegación */
+.header__link,
+.header__logout {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.header__link:hover,
+.header__logout:hover {
+  text-decoration: underline;
+}
+
+.header__burger {
+  width: 32px;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.header__burger span {
+  display: block;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.header__mobile-panel {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #000;
+  border-bottom: 2px solid #fff;
+  padding: 12px 24px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: panelDown 0.25s ease;
+}
+
+.header__mobile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.header__mobile-items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+@keyframes panelDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Desktop */
+@media (min-width: 544px) {
+  .header__burger,
+  .header__mobile-panel {
+    display: none;
+  }
+  .header__nav--desktop {
+    display: flex; /* visible en desktop */
+  }
+}
+
+/* Mobile */
+@media (max-width: 544px) {
+  .header {
+    max-width: 600px;
+    border-bottom: 2px solid #fff;
+  }
+  .header__container {
+    gap: 110px;
+  }
+  .header__nav {
+    gap: 16px;
+  }
+  .header__logo {
+    max-width: 150px;
+  }
+  .header__nav--desktop {
+    display: none; /* oculto en móvil */
+  }
+}
+
+/* Desktop únicamente, y solo en páginas de auth */
+@media (min-width: 1024px) {
+  .app:has(.login) .header,
+  .app:has(.register) .header {
+    max-width: none; /* ocupar todo el ancho */
+    width: 100%;
+    margin: 0;
+  }
+
+  .app:has(.login) .header__container,
+  .app:has(.register) .header__container {
+    width: 100%;
+    margin: 0;
+    gap: 340px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* extremos opuestos */
+  }
+
+  .app:has(.login) .header__nav,
+  .app:has(.register) .header__nav,
+  .app:has(.login) .header__nav--desktop,
+  .app:has(.register) .header__nav--desktop {
+    margin-left: auto; /* empuja el nav a la derecha */
+    gap: 24px;
+  }
+
+  .app:has(.login) .header__logo,
+  .app:has(.register) .header__logo {
+    margin: 0; /* pegado a la izquierda */
+  }
+}

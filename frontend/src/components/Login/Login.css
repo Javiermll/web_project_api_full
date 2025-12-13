@@ -1,0 +1,102 @@
+.login {
+  flex: 1;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px 48px;
+  box-sizing: border-box;
+}
+
+.login__form {
+  display: flex;
+  width: 280px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.login__title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 28px;
+}
+
+.login__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login__field + .login__field {
+  margin-top: 14px;
+}
+
+.login__label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.login__input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #fff;
+  padding: 6px 4px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.login__input::placeholder {
+  color: #888;
+  font-size: 12px;
+}
+
+.login__input:focus {
+  outline: none;
+  border-bottom-color: #61dafb;
+}
+
+.login__submit {
+  margin-top: 290px;
+  width: 100%;
+  padding: 12px;
+  background: #fff;
+  color: #000;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login__submit:hover {
+  background: #e6e6e6;
+}
+
+.login__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login__hint {
+  margin-top: 10px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.login__hint a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.register__toggle-password,
+.login__toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}

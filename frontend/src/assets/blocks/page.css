@@ -1,0 +1,51 @@
+:root {
+  --header-height: 72px;
+}
+
+/* Alturas globales para que el Footer se quede abajo */
+html,
+body,
+#root {
+  height: 100%;
+  justify-items: center;
+}
+
+/* Fondo negro sin usar flex en <body> */
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+}
+
+/* Contenedor raíz de la app */
+.page {
+  min-height: 100vh; /* en vez de height */
+  display: flex;
+  flex-direction: column; /* Header -> Main -> Footer */
+  align-items: stretch; /* ancho completo */
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0; /* sin márgenes raros */
+}
+
+/* Layout de la app: Header arriba, Footer abajo */
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Zona principal que crecerá y permite centrar páginas internas */
+.main {
+  flex: 1; /* ocupa el espacio entre header y footer */
+  display: flex; /* para centrar Login/Register con sus propias reglas */
+}
+
+/* Si no los necesitas, elimina o corrige media queries que cambien display/height de .page */
+@media screen and (min-width: 320px) and (max-width: 544px) {
+  .page {
+    /* Evita romper el layout en mobile */
+    min-height: 100vh;
+    display: flex;
+  }
+}

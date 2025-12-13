@@ -1,0 +1,321 @@
+.popup {
+  position: fixed;
+  align-items: center;
+
+  width: 430px;
+  height: max-content;
+
+  border: none;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  padding: 0;
+
+  font-family: "Inter";
+}
+
+/* Añade este estilo para el fondo oscuro nativo */
+.popup::backdrop {
+  background-color: rgba(0, 0, 0, 0.5); /* Negro semitransparente */
+}
+
+.popup__container {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup__title,
+.popup__title-add {
+  max-width: 330px;
+
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  color: #000000;
+
+  margin: 34px 64px 24px 35px;
+}
+
+/* Campos del formulario */
+.popup__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup__set {
+  border: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup__set_active {
+  max-height: none;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+}
+
+.popup__field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 28px 0;
+  width: 350px;
+  align-self: center;
+}
+
+/*editProfile*/
+.popup__input {
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+
+  position: relative;
+  outline: none;
+  width: 100%;
+  padding: 7px 0;
+  border: none;
+  border-bottom: 1px solid #979797;
+  font: 16px/19px "Inter", sans-serif;
+  background: transparent;
+  transition: border-color var(--transition-time);
+}
+
+.popup__input:focus {
+  outline: none;
+  border-bottom-color: #007dff;
+}
+
+.popup__input:invalid {
+  border-bottom-color: black;
+}
+
+.popup__input:valid:not(:placeholder-shown) {
+  border-bottom-color: black;
+}
+
+.popup__input:hover {
+  border-bottom-color: red;
+}
+
+.popup__error_visible {
+  color: #f00;
+}
+
+.popup__input-error_active {
+  opacity: 1;
+  color: red;
+  max-width: 330px;
+  text-align: justify;
+}
+
+/* Botón Guardar EDITBUTTON*/
+.popup__button {
+  width: 360px;
+  align-self: center;
+  margin: 18px 0 36px;
+
+  background-color: black;
+  color: white;
+  padding: 12px;
+
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  font-size: 18px;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.popup_button_inactive {
+  color: #b8b8b8;
+  cursor: default;
+  background: #ededed;
+  pointer-events: none;
+  user-select: none;
+}
+
+.popup__button:hover {
+  opacity: 0.6;
+}
+
+/* Botón cerrar */
+.popup__close-button {
+  position: fixed;
+  top: calc(50% - 270px); /* Atura del popup */
+  right: calc(50% - 255px); /* Ancho del popup */
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+.popup__close-button:hover {
+  opacity: 0.6;
+}
+
+/* Botón Guardar ADDBUTTON*/
+.popup__close-buttonAdd {
+  position: fixed;
+  top: calc(50% - 260px); /* Atura del popup */
+  right: calc(50% - 255px); /* Ancho del popup */
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+.popup__close-buttonAdd:hover {
+  opacity: 0.6;
+}
+
+/* Imagen dentro del popup */
+.popup_type_image.popup_opened {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.popup_type_image {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Contenedor de la imagen */
+.popup__container_type_image {
+  position: relative;
+  display: inline-block;
+  max-width: 75vw;
+  max-height: 75vh;
+  margin: auto;
+  background: transparent;
+}
+
+.popup_type_image .popup__container {
+  background: transparent;
+  padding: 0;
+  max-width: 75vw;
+  max-height: 75vh;
+}
+
+.popup__image {
+  max-height: 70vh;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.popup__caption {
+  color: white;
+  font-size: 1rem;
+  margin-top: 10px;
+  text-align: center;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
+.popup__button_confirm {
+  margin: 0 0 24px;
+}
+
+.popup__close-buttonDelete {
+  position: fixed;
+  top: calc(50% - 140px); /* Atura del popup */
+  right: calc(50% - 225px); /* Ancho del popup */
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+@media screen and (min-width: 320px) and (max-width: 544px) {
+  .popup {
+    max-width: 100%;
+    width: fit-content;
+  }
+  .popup__title {
+    max-width: 240px;
+    font-size: 18px;
+    line-height: 22px;
+
+    margin: 25px 22px 76px;
+  }
+
+  .popup__title-add {
+    max-width: 240px;
+    font-size: 18px;
+    line-height: 22px;
+
+    margin: 25px 22px 50px;
+  }
+
+  .popup__field {
+    max-width: 240px;
+    margin: 0 22px 30px;
+  }
+
+  .popup__set {
+    padding: 0;
+  }
+
+  .popup__button {
+    max-width: 240px;
+    margin: 16px 0 25px;
+  }
+  .popup__button:hover {
+    opacity: 0.6;
+  }
+  .popup__close-button {
+    top: calc(50% - 265px); /* Atura del popup */
+    right: calc(50% - 150px); /* Ancho del popup */
+  }
+  .popup__close-image {
+    width: 26px;
+    height: 26px;
+  }
+  .popup__close-buttonAdd {
+    top: calc(50% - 240px); /* Atura del popup */
+    right: calc(50% - 150px); /* Ancho del popup */
+  }
+
+  .popup_type_image {
+    width: 100%;
+    height: max-content;
+    background: rgba(0, 0, 0, 0.9);
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  .popup__container_type_image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative; /* Mejor que fixed en este caso */
+    width: 100%;
+    max-width: 100%;
+    max-height: 80vh;
+    background: transparent;
+  }
+
+  .popup__button_confirm {
+    margin: 0 15px 10px;
+  }
+
+  .popup__close-buttonDelete {
+    top: calc(50% - 110px); /* Atura del popup */
+    right: calc(50% - 180px); /* Ancho del popup */
+  }
+
+  .popup__title-deleteCard {
+    margin: 25px auto 20px;
+  }
+}
