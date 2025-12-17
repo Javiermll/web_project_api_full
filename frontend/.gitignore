@@ -1,2 +1,23 @@
-# Ignorar archivos de entorno locales
+# Frontend .gitignore
+# Dependencias y builds
+node_modules/
+dist/
+build/
+coverage/
+
+# Archivos de entorno y configuración local
+.env
+.env.*
 .env.local
+
+# Logs
+logs/
+*.log
+
+# Archivos temporales y de sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de IDEs
+.idea/
+.vscode/

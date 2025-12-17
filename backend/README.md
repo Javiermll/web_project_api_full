@@ -59,6 +59,14 @@
 
 Este proyecto construye una API REST con Express y MongoDB (usando Mongoose) para gestionar usuarios y tarjetas (cards). Su objetivo es practicar y dominar fundamentos de back-end modernos: enrutamiento, controladores, modelos con validación, manejo centralizado de errores y un esquema simple de autorización temporal. Con esto puedes exponer servicios reales, probarlos con Postman/curl y visualizar los datos en MongoDB Compass, sentando las bases para añadir autenticación real y desplegar en producción.
 
+## 0. Dominio del servidor
+
+- El backend y frontend están desplegados y accesibles en:
+  - **Frontend:** https://usaround.mooo.com
+  - **Backend/API:** https://api.usaround.mooo.com
+
+---
+
 ## 1. Requisitos previos
 
 - Node.js LTS y npm

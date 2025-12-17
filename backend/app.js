@@ -1,4 +1,5 @@
-require('dotenv').config();
+require("dotenv").config();
+const helmet = require("helmet");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cardsRoutes = require("./routes/cards");
@@ -13,10 +14,32 @@ const { requestLogger, errorLogger } = require("./utils/logger");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Ruta de crash-test para pruebas de tolerancia a fallos (eliminar después de revisión)
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('El servidor va a caer');
+  }, 0);
+});
+
+app.use(helmet());
 app.use(bodyParser.json());
 
-app.use(cors());
-app.options('*', cors());
+// Configuración CORS específica para el frontend
+app.use(
+  cors({
+    origin: "https://usaround.mooo.com",
+    credentials: true, // Cambia a false si no usas cookies/autenticación
+  })
+);
+
+// Opcional: permite preflight para cualquier ruta
+app.options(
+  "*",
+  cors({
+    origin: "https://usaround.mooo.com",
+    credentials: true,
+  })
+);
 
 // Middleware para registrar cada request
 app.use(requestLogger);

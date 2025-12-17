@@ -1,5 +1,7 @@
 # Tripleten web_project_api_full
 
+**Dominio:** https://usaround.mooo.com
+
 # Sprint Final - Backend: Registro y Autorización de Usuarios
 
 ## Resumen del desafío 1
@@ -500,3 +502,102 @@ Implementar la validación de los datos de entrada (body, params) en las rutas d
 - El backend ahora es más auditable y fácil de depurar.
 
 ---
+
+# Resumen: Configuración de CORS y archivo .env en el Backend
+
+---
+
+## 1. CORS (Cross-Origin Resource Sharing)
+
+### Relevancia
+
+- Permite que el frontend (React) y el backend (Node.js/Express) se comuniquen aunque estén en dominios o puertos diferentes.
+- Es esencial para aplicaciones modernas donde el frontend y backend están separados.
+- Sin CORS, los navegadores bloquean las solicitudes por seguridad.
+
+### Conceptos Clave
+
+- **CORS:** Mecanismo de seguridad que controla qué orígenes pueden acceder a los recursos del servidor.
+- **Preflight request:** Solicitud OPTIONS automática que envía el navegador antes de ciertas peticiones complejas.
+
+### Modificaciones Realizadas
+
+- Instalación del paquete `cors` en el backend.
+- Inclusión de los middlewares en `app.js`:
+  ```js
+  const cors = require("cors");
+  app.use(cors());
+  app.options("*", cors());
+  ```
+  Estas líneas se colocaron antes de definir las rutas para asegurar que todas las solicitudes sean permitidas.
+
+## Pasos Básicos en el Código
+
+- 1.  Instalar el paquete
+  ```js
+  npm install cors
+  ```
+- 2.  importar y usar en app.js
+
+```js
+const cors = require("cors");
+app.use(cors());
+app.options("*", cors());
+```
+
+## 2. Archivo .env
+
+Relevancia
+
+- Permite manejar variables sensibles y de configuración (como JWT_SECRET) fuera del código fuente.
+- Mejora la seguridad y facilita la configuración para diferentes entornos (desarrollo, producción).
+- El archivo .env nunca debe subirse al repositorio.
+
+Conceptos Clave
+
+- .env: Archivo de texto plano que almacena variables de entorno.
+- dotenv: Paquete que carga automáticamente las variables de .env en process.env.
+- NODE_ENV: Variable que indica el entorno de ejecución (development, production, etc).
+
+## Modificaciones Realizadas
+
+- Instalación de dotenv en el backend.
+- Inclusión de la línea al inicio de app.js:
+
+`````js
+require("dotenv").config();
+````;
+`````
+
+- Creación del archivo .env en la carpeta backend con:
+
+NODE_ENV=production
+JWT_SECRET=<clave segura>
+
+- agregado de .env a .gitignore para evitar que se suba a git
+
+## Pasos basicos del codigo
+
+1- Instalr dotenv:
+
+```js
+   npm install dotenv
+```
+
+2-Agregar al inicio de app.js
+
+```js
+requiere("dotenv").config();
+```
+
+3- Crear .env en backend
+
+NODE_ENV=production
+JWT_SECRET=clave_secreta_segura
+
+4-Asegurarse de que .env esta en .gitignore.
+
+## Conclusión
+
+CORS y .env son fundamentales para la seguridad, escalabilidad y correcto funcionamiento de aplicaciones web modernas.
+Su correcta configuración permite separar ambientes, proteger información sensible y facilitar el despliegue en producción.
