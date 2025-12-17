@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Archivos de construcción
+build/
+dist/
+
+# Archivos de entorno
+.env
+.env.*
+
+# Respaldos automáticos o manuales
+frontend_backup_*/
+
+# Otros archivos generados
+coverage/
+*.log
+
+# Archivos del sistema/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
