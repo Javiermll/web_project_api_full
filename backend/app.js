@@ -14,12 +14,6 @@ const { requestLogger, errorLogger } = require("./utils/logger");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Ruta de crash-test para pruebas de tolerancia a fallos (eliminar después de revisión)
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('El servidor va a caer');
-  }, 0);
-});
 
 app.use(helmet());
 app.use(bodyParser.json());
@@ -27,8 +21,8 @@ app.use(bodyParser.json());
 // Configuración CORS específica para el frontend
 app.use(
   cors({
-    origin: "https://usaround.mooo.com",
-    credentials: true, // Cambia a false si no usas cookies/autenticación
+    origin: process.env.ALLOWED_ORIGIN,
+    credentials: true,
   })
 );
 
@@ -36,7 +30,7 @@ app.use(
 app.options(
   "*",
   cors({
-    origin: "https://usaround.mooo.com",
+    origin: process.env.ALLOWED_ORIGIN,
     credentials: true,
   })
 );
@@ -93,8 +87,8 @@ app.get("/prueba", (req, res) => {
 // Conectar a MongoDB y luego arrancar el servidor
 async function start() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/aroundb");
-    console.log("Conectado a MongoDB: mongodb://localhost:27017/aroundb");
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`Conectado a MongoDB: ${process.env.MONGODB_URI}`);
 
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
