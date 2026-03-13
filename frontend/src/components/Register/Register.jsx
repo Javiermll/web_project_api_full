@@ -46,56 +46,65 @@ export default function Register({ onResult }) {
 
   return (
     <main className="register">
-      <h1 className="register__title">Regístrate</h1>
-      <form onSubmit={handleSubmit} className="register__form" noValidate>
-        <label className="register__field">
-          <span className="register__label">Correo electrónico</span>
-          <input
-            name="email"
-            type="email"
-            className="register__input"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        <label className="register__field" style={{ position: "relative" }}>
-          <span className="register__label">Contraseña</span>
-          <input
-            name="password"
-            type={showPassword ? "text" : "password"}
-            className="register__input"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            style={{ paddingRight: "36px" }}
-          />
-          <button
-            type="button"
-            tabIndex={-1}
-            className="register__toggle-password"
-            onClick={() => setShowPassword((v) => !v)}
-            aria-label={
-              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-            }
-          >
-            {showPassword ? EyeOpen : <span style={{ opacity: 0.4 }}>{EyeOpen}</span>}
+      <div className="register__card">
+      <div className="register__panel">
+        <div className="register__icon" />
+        <p className="register__panel-tagline">
+          Únete a la comunidad,<br />explora el mundo.
+        </p>
+        <p className="register__panel-sub">Around The U.S. — Tu red de fotografía</p>
+      </div>
+
+      <div className="register__form-panel">
+        <h1 className="register__title">Crea tu cuenta</h1>
+        <p className="register__subtitle">Empieza a compartir tus lugares favoritos</p>
+
+        <form onSubmit={handleSubmit} className="register__form" noValidate>
+          <div className="register__field">
+            <span className="register__label">Correo electrónico</span>
+            <input
+              name="email"
+              type="email"
+              className="register__input"
+              placeholder="email@dominio.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="register__field">
+            <span className="register__label">Contraseña</span>
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              className="register__input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              style={{ paddingRight: "40px" }}
+            />
+            <button
+              type="button"
+              tabIndex={-1}
+              className="register__toggle-password"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              {showPassword ? EyeOpen : <span style={{ opacity: 0.4 }}>{EyeOpen}</span>}
+            </button>
+          </div>
+          <button type="submit" className="register__submit" disabled={submitting}>
+            {submitting ? "Registrando..." : "Crear cuenta"}
           </button>
-        </label>
-        <button
-          type="submit"
-          className="register__submit"
-          disabled={submitting}
-        >
-          {submitting ? "Registrando..." : "Regístrate"}
-        </button>
-      </form>
-      <p className="register__hint">
-        ¿Ya eres miembro? <Link to="/signin">Inicia sesión aquí</Link>
-      </p>
+        </form>
+
+        <p className="register__hint">
+          ¿Ya eres miembro? <Link to="/signin">Inicia sesión aquí</Link>
+        </p>
+      </div>
+      </div>
     </main>
   );
 }

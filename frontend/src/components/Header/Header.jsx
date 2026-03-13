@@ -19,17 +19,14 @@ function Header({ email, onSignOut }) {
       <div className="header__container">
         <img src={logo} alt="Logo Around The U.S." className="header__logo" />
 
-        {loggedIn ? (
+        {loggedIn && !isAuthPage && (
           <>
-            {/* Desktop: email + logout visibles */}
             <nav className="header__nav header__nav--desktop">
               {email && <span className="header__email">{email}</span>}
               <button type="button" className="header__logout header__link" onClick={onSignOut}>
                 Cerrar sesión
               </button>
             </nav>
-
-            {/* Mobile: botón hamburguesa */}
             <button
               type="button"
               className="header__burger"
@@ -41,21 +38,6 @@ function Header({ email, onSignOut }) {
               <span />
             </button>
           </>
-        ) : (
-          <nav className="header__nav">
-            {isAuthPage ? (
-              location.pathname === "/signin" ? (
-                <Link to="/signup" className="header__link">Regístrate</Link>
-              ) : (
-                <Link to="/signin" className="header__link">Iniciar sesión</Link>
-              )
-            ) : (
-              <>
-                <Link to="/signup" className="header__link">Regístrate</Link>
-                <Link to="/signin" className="header__link">Iniciar sesión</Link>
-              </>
-            )}
-          </nav>
         )}
       </div>
 

@@ -10,6 +10,7 @@ import avatar from "../../assets/images/JacquesC.jpg";
 import editIcon from "../../assets/images/Vector1.png";
 import addIcon from "../../assets/images/Add_Button.png";
 import trashIcon from "../../assets/images/Trash.svg";
+import { BeamsBackground } from "../BeamsBackground/BeamsBackground";
 import "./Main.css";
 
 function Main({
@@ -91,6 +92,8 @@ function Main({
 
   return (
     <main className="content">
+      <BeamsBackground intensity="strong" />
+      <div className="content__inner">
       <section className="profile">
         <div className="profile__image-container">
           <img
@@ -156,6 +159,7 @@ function Main({
           {popup.children}
         </Popup>
       )}
+      </div>
     </main>
   );
 }
