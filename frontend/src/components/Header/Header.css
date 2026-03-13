@@ -20,7 +20,9 @@
 
 .header__logo {
   max-width: 180px;
-  margin: 0; /* sin margen inferior */
+  max-height: 50px;
+  object-fit: contain;
+  margin: 0;
 }
 
 .header__nav {
