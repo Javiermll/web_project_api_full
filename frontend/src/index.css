@@ -1,10 +1,5 @@
 @import url(./assets/vendor/normalize.css);
 
-@keyframes beamsPulse {
-  0%, 100% { opacity: 0.05; }
-  50%       { opacity: 0.15; }
-}
-
 @import url(./assets/blocks/page.css);
 
 @import url(./components/Header/Header.css);
@@ -15,3 +10,8 @@
 @import url(./components/Card/Card.css);
 
 @import url(./components/Popup/Popup.css);
+
+@keyframes beamsPulse {
+  0%, 100% { opacity: 0.05; }
+  50%       { opacity: 0.15; }
+}
