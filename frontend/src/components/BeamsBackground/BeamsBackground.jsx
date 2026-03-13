@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { motion } from "motion/react";
 
 const opacityMap = {
   subtle: 0.7,
@@ -119,15 +118,12 @@ export function BeamsBackground({ intensity = "strong" }) {
         ref={canvasRef}
         style={{ position: "absolute", inset: 0, filter: "blur(15px)" }}
       />
-      <motion.div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backdropFilter: "blur(50px)",
-        }}
-        animate={{ opacity: [0.05, 0.15, 0.05] }}
-        transition={{ duration: 10, ease: "easeInOut", repeat: Infinity }}
-      />
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        backdropFilter: "blur(50px)",
+        animation: "beamsPulse 10s ease-in-out infinite",
+      }} />
     </div>
   );
 }
