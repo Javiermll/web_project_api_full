@@ -1,15 +1,12 @@
 import { getToken } from "./auth.js";
 
 const base = import.meta.env.VITE_MAIN_API_BASE_URL;
-const cohortToken = import.meta.env.VITE_MAIN_API_TOKEN;
 
 if (!base) console.error("Falta VITE_MAIN_API_BASE_URL");
-if (!cohortToken) console.error("Falta VITE_MAIN_API_TOKEN (token personal)");
 
 class Api {
-  constructor({ baseUrl, cohortToken }) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
-    this._cohortToken = cohortToken;
   }
 
   _headers(extra = {}) {
@@ -71,4 +68,4 @@ class Api {
   }
 }
 
-export default new Api({ baseUrl: base, cohortToken });
+export default new Api({ baseUrl: base });
