@@ -162,36 +162,19 @@
   }
 }
 
-/* Desktop únicamente, y solo en páginas de auth */
-@media (min-width: 1024px) {
+/* Páginas de auth: header full-width con padding */
+.app:has(.login) .header,
+.app:has(.register) .header {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 544px) {
   .app:has(.login) .header,
   .app:has(.register) .header {
-    max-width: none; /* ocupar todo el ancho */
-    width: 100%;
-    margin: 0;
-  }
-
-  .app:has(.login) .header__container,
-  .app:has(.register) .header__container {
-    width: 100%;
-    margin: 0;
-    gap: 340px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* extremos opuestos */
-  }
-
-  .app:has(.login) .header__nav,
-  .app:has(.register) .header__nav,
-  .app:has(.login) .header__nav--desktop,
-  .app:has(.register) .header__nav--desktop {
-    margin-left: auto; /* empuja el nav a la derecha */
-    gap: 24px;
-  }
-
-  .app:has(.login) .header__logo,
-  .app:has(.register) .header__logo {
-    margin: 0; /* pegado a la izquierda */
+    padding: 0 16px;
   }
 }
