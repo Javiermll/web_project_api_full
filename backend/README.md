@@ -1,268 +1,315 @@
-# Guía de configuración del proyecto web_project_around_express
+# Backend — Around The U.S. API
 
-## 1. Estructura del proyecto
+API REST construida con Node.js y Express que gestiona usuarios y tarjetas fotográficas con autenticación JWT completa.
 
-- Se creó la carpeta `web_project_around_express` con subcarpetas `backend` y `frontend`.
-- En `backend` se añadieron las carpetas `routes` y `data` para organizar rutas y archivos JSON.
+**API en producción:** https://around-backend-l7gc.onrender.com
 
-## 2. Inicialización del proyecto
-
-- Se ejecutó `npm init` para crear el archivo `package.json` y definir los campos principales.
-
-## 3. Configuración de archivos básicos
-
-- Se creó `.gitignore` para ignorar archivos y carpetas innecesarias como `node_modules`, logs y configuraciones de IDE.
-- Se creó `.editorconfig` para mantener un estilo de código uniforme entre todos los desarrolladores.
-
-## 4. Configuración de ESLint
-
-- Se instalaron las dependencias:
-  - `eslint@8.56.0`
-  - `eslint-config-airbnb-base`
-  - `eslint-plugin-import`
-  - `nodemon`
-- Se creó el archivo `.eslintrc` con la configuración de Airbnb y excepciones para `_id`, `console.log` y saltos de línea.
-
-## 5. Configuración de scripts en package.json
-
-- Se añadieron los comandos:
-  - `"start": "node app.js"` para iniciar el servidor.
-  - `"dev": "nodemon app.js"` para desarrollo con hot reload.
-  - `"lint": "npx eslint ."` para analizar el código con ESLint.
-
-## 6. Creación del servidor Express
-
-- Se creó el archivo `app.js` como punto de entrada.
-- Se configuró Express para escuchar en el puerto 3000.
-- Se añadieron los middlewares necesarios y las rutas principales.
-
-## 7. Configuración de rutas y manejo de datos
-
-- Se crearon los archivos `routes/users.js` y `routes/cards.js`.
-- Se configuraron las rutas:
-  - `GET /users` para obtener todos los usuarios.
-  - `GET /users/:id` para obtener un usuario por ID, devolviendo 404 si no existe.
-  - `GET /cards` para obtener todas las tarjetas.
-- Se utilizó el módulo `fs` para leer y escribir en los archivos JSON, y el módulo `path` para construir rutas compatibles con cualquier sistema operativo.
-
-## 8. Manejo de errores
-
-- Se configuró un manejador 404 global para devolver el mensaje `{ "message": "Recurso solicitado no encontrado" }` en rutas no existentes, incluyendo la raíz `/`.
-
-## 9. Pruebas
-
-- Se recomendó probar las rutas y respuestas en Postman para verificar el correcto funcionamiento de la API.
+> El backend corre en el plan gratuito de Render. Si lleva un tiempo sin recibir peticiones, el servidor "duerme". La primera petición puede tardar ~30 segundos mientras arranca.
 
 ---
 
-# web_project_around_express (Parte 2)
+## Qué hace este backend
 
-Este proyecto construye una API REST con Express y MongoDB (usando Mongoose) para gestionar usuarios y tarjetas (cards). Su objetivo es practicar y dominar fundamentos de back-end modernos: enrutamiento, controladores, modelos con validación, manejo centralizado de errores y un esquema simple de autorización temporal. Con esto puedes exponer servicios reales, probarlos con Postman/curl y visualizar los datos en MongoDB Compass, sentando las bases para añadir autenticación real y desplegar en producción.
+Expone una serie de endpoints HTTP que el frontend consume. Cada endpoint:
 
-## 0. Dominio del servidor
-
-- El backend y frontend están desplegados y accesibles en:
-  - **Frontend:** https://usaround.mooo.com
-  - **Backend/API:** https://api.usaround.mooo.com
+1. Recibe una petición (registro, login, crear tarjeta, etc.)
+2. Valida que los datos enviados tengan el formato correcto (Celebrate/Joi)
+3. Comprueba que el usuario esté autenticado (middleware JWT), excepto en `/signin` y `/signup`
+4. Ejecuta la lógica de negocio (controlador) y consulta/modifica MongoDB
+5. Devuelve una respuesta JSON
 
 ---
 
-## 1. Requisitos previos
+## Stack tecnológico
 
-- Node.js LTS y npm
-- MongoDB en local (servicio en 27017) + MongoDB Compass (opcional)
-- Git (opcional, para versionado y subida a GitHub)
-- Postman o cURL para probar endpoints
+| Paquete | Versión | Para qué sirve |
+|---------|---------|----------------|
+| express | 4.18.2 | Framework HTTP — define rutas y middlewares |
+| mongoose | 8.19.2 | ODM para MongoDB — define esquemas y hace queries |
+| jsonwebtoken | 9.0.3 | Firma y verifica tokens JWT |
+| bcryptjs | — | Hashea contraseñas antes de guardarlas |
+| celebrate + joi | 15.0.3 | Valida el cuerpo/params de cada petición antes de llegar al controlador |
+| helmet | — | Añade cabeceras HTTP de seguridad automáticamente |
+| cors | — | Permite peticiones desde el frontend (dominio distinto) |
+| dotenv | — | Carga variables de entorno desde el archivo `.env` |
+| nodemon | — | Reinicia el servidor automáticamente al guardar cambios (solo en desarrollo) |
 
-## 2. Estructura del proyecto
+---
 
-```
-web_project_around_express/
-├─ app.js
-├─ controllers/
-│  ├─ users.js
-│  └─ cards.js
-├─ routes/
-│  ├─ users.js
-│  └─ cards.js
-├─ models/
-│  ├─ user.js
-│  └─ card.js
-├─ errors/
-│  └─ httpErrors.js
-├─ package.json
-├─ .gitignore
-└─ README.md
-```
-
-- controllers: lógica de negocio de cada ruta.
-- routes: definición de endpoints y enlace a controladores.
-- models: esquemas Mongoose (validación y persistencia).
-- errors: clases de error HTTP personalizadas.
-
-## 3. Instalación
-
-1. Instalar dependencias
+## Estructura del proyecto
 
 ```
+backend/
+├── app.js                  # Punto de entrada: conecta a MongoDB y arranca Express
+├── controllers/
+│   ├── users.js            # Lógica de usuarios: registro, login, perfil, avatar
+│   └── cards.js            # Lógica de tarjetas: crear, listar, borrar, likes
+├── routes/
+│   ├── users.js            # Define las URLs de usuario y qué controlador llama cada una
+│   └── cards.js            # Define las URLs de tarjetas
+├── models/
+│   ├── user.js             # Esquema Mongoose del usuario (campos, validaciones, tipos)
+│   └── card.js             # Esquema Mongoose de la tarjeta
+├── middlewares/
+│   └── auth.js             # Verifica el token JWT en cada petición protegida
+├── errors/
+│   └── httpErrors.js       # Clases de error con código HTTP: BadRequestError, NotFoundError, ForbiddenError
+└── utils/
+    ├── logger.js           # Configuración de winston: graba logs en request.log y error.log
+    └── validator.js        # Función reutilizable para validar URLs con Celebrate
+```
+
+---
+
+## Cómo arranca la aplicación (`app.js`)
+
+El orden de los middlewares en Express importa. Este es el flujo exacto que sigue cada petición:
+
+```
+Petición entrante
+      │
+      ▼
+helmet()          → añade cabeceras de seguridad HTTP (X-Frame-Options, etc.)
+bodyParser.json() → parsea el body de la petición como JSON
+cors()            → comprueba que el origen sea ALLOWED_ORIGIN; responde preflight OPTIONS
+requestLogger     → graba la petición en request.log (método, URL, fecha)
+      │
+      ├─ POST /signin  → login()     (sin auth)
+      ├─ POST /signup  → createUser() (sin auth)
+      │
+      ├─ /users  → auth middleware → rutas de usuarios
+      └─ /cards  → auth middleware → rutas de tarjetas
+      │
+      ▼
+404 handler       → si ninguna ruta coincidió
+celebrateErrors() → convierte errores de validación de Celebrate en respuestas 400
+errorLogger       → graba errores en error.log
+globalErrorHandler→ decide el status code y devuelve { message }
+```
+
+La función `start()` primero conecta a MongoDB con `mongoose.connect()` y **solo entonces** arranca `app.listen()`. Si la base de datos falla, el proceso termina con `process.exit(1)`.
+
+---
+
+## Modelos de datos (MongoDB)
+
+### User (`models/user.js`)
+
+```
+Campo    Tipo     Requerido  Notas
+─────────────────────────────────────────────────────────────
+name     String   No         Mín 2, máx 30 chars. Default: "Jacques Cousteau"
+about    String   No         Mín 2, máx 30 chars. Default: "Explorer"
+avatar   String   No         Debe ser URL válida (regex). Default: imagen S3
+email    String   Sí         Único, validado con la librería `validator`
+password String   Sí         Mín 6 chars. select:false → nunca se devuelve en queries
+```
+
+`select: false` en `password` significa que cualquier `User.find()` o `User.findById()` **nunca incluirá la contraseña** en el resultado, a menos que se llame explícitamente con `.select("+password")` (como en login).
+
+### Card (`models/card.js`)
+
+```
+Campo      Tipo        Requerido  Notas
+──────────────────────────────────────────────────────────────
+name       String      Sí         Mín 2, máx 30 chars
+link       String      Sí         Debe ser URL válida (regex)
+owner      ObjectId    Sí         Referencia al _id del usuario que la creó
+likes      [ObjectId]  No         Array de referencias a usuarios. Default: []
+createdAt  Date        No         Default: Date.now en el momento de creación
+```
+
+Los `ObjectId` son los identificadores únicos de MongoDB (24 caracteres hexadecimales). `ref: "user"` permite hacer `.populate()` para obtener el documento completo del usuario en lugar del ID.
+
+---
+
+## Autenticación JWT
+
+### ¿Qué es un JWT?
+
+Un JSON Web Token es una cadena codificada en Base64 con tres partes: `header.payload.signature`. El servidor firma el payload con `JWT_SECRET`, y cualquier modificación rompe la firma, haciendo el token inválido.
+
+### Flujo completo
+
+**1. Registro (`POST /signup`):**
+```
+Cliente envía { email, password }
+      │
+      ▼
+bcrypt.hash(password, 10)  → genera hash irreversible (10 rondas de salt)
+User.create({ email, hashedPassword, ... })
+Respuesta: 201 { success: true, data: { ...usuario sin password } }
+```
+
+**2. Login (`POST /signin`):**
+```
+Cliente envía { email, password }
+      │
+      ▼
+User.findOne({ email }).select("+password")  → incluye password explícitamente
+bcrypt.compare(password, user.password)      → compara texto plano con hash
+jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" })
+Respuesta: 200 { token: "eyJ..." }
+```
+
+**3. Petición protegida:**
+```
+Cliente envía Header: Authorization: Bearer eyJ...
+      │
+      ▼
+middlewares/auth.js:
+  - Extrae el token del header
+  - jwt.verify(token, JWT_SECRET)  → si es válido, decodifica el payload
+  - Inyecta req.user = { _id: "..." }
+  - Si falla → 403 "No autorizado"
+      │
+      ▼
+Controlador tiene acceso a req.user._id
+```
+
+---
+
+## Validación con Celebrate/Joi
+
+Celebrate es un middleware que envuelve Joi (librería de validación de esquemas) para Express. Se define directamente en la ruta, **antes** del controlador.
+
+Ejemplo de `routes/cards.js`:
+```js
+router.post(
+  "/",
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      name: Joi.string().required(),
+      link: Joi.string().required().custom(validateURL),
+    }),
+  }),
+  createCard  // solo se ejecuta si la validación pasa
+);
+```
+
+Si el body no cumple el esquema, Celebrate lanza un error que el middleware `celebrateErrors()` captura y convierte en un 400 con detalles del campo inválido. El controlador nunca llega a ejecutarse.
+
+Los params de URL también se validan (ej: que `cardId` sea un hex de 24 caracteres antes de hacer la query a MongoDB).
+
+---
+
+## Endpoints
+
+### Públicos (sin token)
+
+| Método | Ruta | Body | Respuesta |
+|--------|------|------|-----------|
+| POST | `/signup` | `{ email, password, name?, about?, avatar? }` | `201 { success, data: { usuario } }` |
+| POST | `/signin` | `{ email, password }` | `200 { token }` |
+
+### Protegidos (requieren `Authorization: Bearer <token>`)
+
+**Usuarios**
+
+| Método | Ruta | Body | Respuesta |
+|--------|------|------|-----------|
+| GET | `/users/me` | — | `200 { usuario actual }` |
+| GET | `/users` | — | `200 [ lista de usuarios ]` |
+| GET | `/users/:userId` | — | `200 { usuario }` o `404` |
+| PATCH | `/users/me` | `{ name, about }` | `200 { usuario actualizado }` |
+| PATCH | `/users/me/avatar` | `{ avatar }` | `200 { usuario actualizado }` |
+
+**Tarjetas**
+
+| Método | Ruta | Body | Respuesta |
+|--------|------|------|-----------|
+| GET | `/cards` | — | `200 [ lista de tarjetas ]` |
+| POST | `/cards` | `{ name, link }` | `201 { tarjeta creada }` |
+| DELETE | `/cards/:cardId` | — | `200` o `403` si no es el dueño |
+| PUT | `/cards/:cardId/likes` | — | `200 { tarjeta con like añadido }` |
+| DELETE | `/cards/:cardId/likes` | — | `200 { tarjeta con like quitado }` |
+
+La lógica de likes usa operadores de MongoDB directamente:
+- Like: `$addToSet` — añade el `_id` al array sin duplicados
+- Unlike: `$pull` — elimina el `_id` del array
+
+---
+
+## Manejo centralizado de errores
+
+`errors/httpErrors.js` define clases con un `statusCode` propio:
+
+```js
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
+  }
+}
+```
+
+El middleware global de `app.js` lee `err.statusCode` si existe, o mapea tipos de error de Mongoose:
+- `ValidationError` / `CastError` → 400
+- `DocumentNotFoundError` → 404
+- Cualquier otro → 500 con mensaje genérico (para no filtrar detalles internos)
+
+---
+
+## Logging
+
+`utils/logger.js` usa **winston** con formato JSON. Se generan dos archivos de log:
+
+- `request.log` — cada petición HTTP (método, URL, status, IP, fecha)
+- `error.log` — solo errores (stack trace, mensaje, ruta)
+
+En producción esto permite auditar el tráfico y diagnosticar problemas sin necesidad de `console.log`.
+
+---
+
+## Variables de entorno
+
+Crear `backend/.env` para desarrollo local (no commitear):
+
+```env
+MONGODB_URI=mongodb://localhost:27017/aroundb
+JWT_SECRET=cualquier_cadena_larga_y_aleatoria
+PORT=3000
+ALLOWED_ORIGIN=http://localhost:5173
+NODE_ENV=development
+```
+
+En Render (producción) estas variables se configuran en el dashboard y nunca tocan el código fuente.
+
+---
+
+## Instalación y ejecución local
+
+```bash
+cd backend
 npm install
+# Crear el archivo .env con las variables de arriba
+npm run dev     # Inicia con nodemon (recarga al guardar) → http://localhost:3000
+npm start       # Inicia sin hot reload (para producción)
+npm run lint    # Ejecuta ESLint con reglas Airbnb
 ```
 
-2. Scripts disponibles
+---
 
-- start: inicia el servidor una sola vez.
-- dev: inicia con nodemon (recarga al guardar).
-- lint: ejecuta ESLint si está configurado en el proyecto.
+## Probar los endpoints con curl
 
-Ejemplos:
+```bash
+# Registrar usuario
+curl -X POST http://localhost:3000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","password":"123456"}'
 
+# Login (guarda el token que devuelve)
+curl -X POST http://localhost:3000/signin \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","password":"123456"}'
+
+# Petición protegida (sustituye TOKEN por el valor recibido en login)
+curl http://localhost:3000/users/me \
+  -H "Authorization: Bearer TOKEN"
+
+# Crear tarjeta
+curl -X POST http://localhost:3000/cards \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Mi lugar","link":"https://example.com/foto.jpg"}'
 ```
-npm run dev
-```
-
-## 4. Configuración
-
-Variables de entorno recomendadas:
-
-- PORT: puerto (por defecto 3000)
-- MONGODB_URI: cadena de conexión (por defecto mongodb://localhost:27017/aroundb)
-- TEST_USER_ID: id de usuario para autorización temporal (opcional; alternativa al header)
-
-En PowerShell (Windows):
-
-```
-$env:PORT="3000"
-$env:MONGODB_URI="mongodb://localhost:27017/aroundb"
-$env:TEST_USER_ID="<ObjectId de tu usuario>"
-npm run dev
-```
-
-## 5. Conexión a MongoDB
-
-app.js realiza la conexión:
-
-- Conecta a mongodb://localhost:27017/aroundb con mongoose.connect.
-- Solo levanta el servidor tras conectar correctamente.
-
-Puedes verificar en consola:
-
-- “Conectado a MongoDB: mongodb://localhost:27017/aroundb”
-- “Server is running on http://localhost:3000”
-
-## 6. Autorización temporal (req.user)
-
-Middleware en app.js:
-
-- Inyecta req.user.\_id con un ObjectId “hard-coded” para pruebas.
-- Permite sobrescribirlo con el header X-User-Id o la variable TEST_USER_ID.
-- Útil para crear cards con owner y autorizar delete/likes sin implementar login todavía.
-
-Ejemplo rápido con header:
-
-- X-User-Id: <tu ObjectId de users>
-
-## 7. Modelos y validaciones
-
-- User: name, about, avatar (URL validada por regex).
-- Card: name (2–30), link (URL válida), owner (ObjectId ref user), likes (array de ObjectId únicos), createdAt.
-
-Las validaciones de Mongoose devuelven errores “ValidationError” → 400.
-
-## 8. Rutas y controladores
-
-Usuarios
-
-- GET /users — lista todos
-- GET /users/:userId — obtiene por id
-- POST /users — crea usuario { name, about, avatar }
-- PATCH /users/me — actualiza perfil { name, about }
-- PATCH /users/me/avatar — actualiza avatar { avatar }
-
-Tarjetas
-
-- GET /cards — lista todas
-- POST /cards — crea { name, link } usando req.user.\_id como owner
-- DELETE /cards/:cardId — elimina si req.user.\_id es owner
-- PUT /cards/:cardId/likes — da like con $addToSet
-- DELETE /cards/:cardId/likes — quita like con $pull
-
-Buenas prácticas aplicadas
-
-- Validación de ObjectId con mongoose.isValidObjectId → 400 cuando es inválido.
-- Búsquedas con .orFail(() => new NotFoundError(...)) → 404 si no existe.
-- next(err) en controladores para delegar a un manejador global.
-
-## 9. Manejo centralizado de errores
-
-- errors/httpErrors.js define BadRequestError (400), NotFoundError (404), ForbiddenError (403).
-- Middleware global en app.js:
-  - Usa err.statusCode si viene de nuestros errores personalizados.
-  - Mappea ValidationError/CastError → 400, DocumentNotFoundError → 404.
-  - Predeterminado → 500 “Error interno del servidor”.
-
-Resultado: respuestas consistentes y JSON con message.
-
-## 10. Cómo probar
-
-Con Postman
-
-- Crear usuario:
-  - POST http://localhost:3000/users
-  - Body JSON: { "name":"Ana","about":"Dev","avatar":"https://example.com/a.jpg" }
-- Crear card:
-  - POST http://localhost:3000/cards
-  - Header: X-User-Id: <\_id del usuario>
-  - Body JSON: { "name":"My Card","link":"https://example.com/photo.jpg" }
-- Like/Unlike:
-  - PUT /cards/<cardId>/likes
-  - DELETE /cards/<cardId>/likes
-- Actualizar perfil:
-  - PATCH /users/me Body: { "name":"Nuevo","about":"Bio" }
-- Actualizar avatar:
-  - PATCH /users/me/avatar Body: { "avatar":"https://..." }
-
-Con PowerShell (Invoke-RestMethod)
-
-```
-Invoke-RestMethod -Uri http://localhost:3000/cards
-Invoke-RestMethod -Method Post -Uri http://localhost:3000/cards `
-  -Body (@{name='My Card'; link='https://example.com/photo.jpg'} | ConvertTo-Json) `
-  -Headers @{ 'X-User-Id' = '<USER_ID>' } -ContentType 'application/json'
-```
-
-Ver datos en MongoDB
-
-- Compass: conecta a mongodb://localhost:27017 → DB aroundb → colecciones users y cards.
-- mongosh:
-  - mongosh "mongodb://localhost:27017/aroundb"
-  - db.users.find().pretty()
-  - db.cards.find().pretty()
-
-## 11. Checklist rápida (lista de comprobación)
-
-- [x] Conexión a MongoDB y arranque del server tras conectar.
-- [x] Rutas users implementadas (GET/GET:id/POST/PATCH me/PATCH avatar).
-- [x] Rutas cards implementadas (GET/POST/DELETE:id/PUT likes/DELETE likes).
-- [x] Validación de ObjectId y de datos (Mongoose).
-- [x] .orFail en lecturas por id para devolver 404.
-- [x] Manejo global de errores 400/404/500.
-- [x] Autorización temporal por req.user.\_id (hard-coded / header / TEST_USER_ID).
-- [x] Pruebas con Postman/curl y verificación en Compass.
-
-## 12. Solución de problemas comunes
-
-- Postman devuelve HTML 404 “\_\_vscode_livepreview…”:
-  - Otro proceso ocupa el puerto 3000 (Live Preview). Cierra la extensión o cambia PORT.
-- curl en PowerShell:
-  - Usa curl.exe o Invoke-RestMethod (curl está aliasado).
-- 400 en POST /cards:
-  - Verifica link (https://...) y que X-User-Id sea un ObjectId válido.
-- 403 al borrar card:
-  - El X-User-Id no coincide con owner.
-
-## 13. Próximos pasos
-
-- Sustituir autorización temporal por autenticación real (JWT/sesiones).
-- Validación por esquema (Celebrate/Joi) en lugar de depender solo de Mongoose.
-- Logs estructurados (pino/winston) y pruebas unitarias/integración.
-- Despliegue (Render, Railway, Fly.io, etc.) y uso de variables de entorno seguras.
