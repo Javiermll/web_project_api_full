@@ -1,6 +1,8 @@
 .footer {
   display: flex;
   align-self: flex-start;
+  position: relative;
+  z-index: 2;
 
   font-style: normal;
   font-weight: 400;
