@@ -169,6 +169,38 @@ Controlador tiene acceso a req.user._id
 
 ---
 
+## Arquitectura en capas
+
+Este backend sigue el patrón **Routes → Controller → Model** (equivalente a MVC sin la V):
+
+```
+HTTP Request
+      │
+      ▼
+routes/cards.js          ← ¿Qué URL? ¿Qué método HTTP? ¿Qué validaciones previas?
+      │
+      ▼
+middlewares/auth.js      ← ¿El usuario está autenticado? (solo rutas protegidas)
+      │
+      ▼
+controllers/cards.js     ← Lógica de negocio: ¿qué hacer con la petición?
+      │
+      ▼
+models/card.js           ← Interacción con MongoDB via Mongoose
+      │
+      ▼
+HTTP Response            ← JSON con datos o error
+```
+
+**¿Por qué esta separación?**
+- Las **rutas** solo enlazan URLs con controladores. No saben nada de base de datos.
+- Los **controladores** contienen la lógica pero no saben cómo se almacenan los datos.
+- Los **modelos** solo describen la forma de los datos y hacen queries. No conocen Express.
+
+Esta separación hace que cada capa sea testeable de forma independiente y que los cambios en una no afecten las demás.
+
+---
+
 ## Validación con Celebrate/Joi
 
 Celebrate es un middleware que envuelve Joi (librería de validación de esquemas) para Express. Se define directamente en la ruta, **antes** del controlador.

@@ -122,7 +122,7 @@ web_project_api_full/
 │   └── utils/          # logger.js, validator.js
 └── frontend/
     └── src/
-        ├── components/ # Card, Login, Register, Header, etc.
+        ├── components/ # Card, Login, Register, Header, BeamsBackground, etc.
         ├── contexts/   # CurrentUserContext
         └── utils/      # apiInstance.js, auth.js
 ```
