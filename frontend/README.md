@@ -31,8 +31,9 @@ frontend/
 │   │   ├── Footer/                # Pie de página (oculto en páginas de auth)
 │   │   ├── Main/                  # Vista principal autenticada con tarjetas
 │   │   ├── Card/                  # Componente de tarjeta individual
-│   │   ├── Login/                 # Formulario de inicio de sesión
-│   │   ├── Register/              # Formulario de registro
+│   │   ├── Login/                 # Página de inicio de sesión — layout split-panel (panel izquierdo oscuro + formulario derecho claro)
+│   │   ├── Register/              # Página de registro — mismo layout split-panel que Login
+│   │   ├── BeamsBackground/       # Fondo estático de la página principal: gradientes radiales azul/púrpura/cian sobre #0a0a0f
 │   │   └── InfoTooltip/           # Modal de resultado (éxito/error)
 │   ├── contexts/
 │   │   └── CurrentUserContext.js  # Context de React con los datos del usuario actual
@@ -172,6 +173,55 @@ Un componente descendiente (como `Card`) puede leer el usuario actual sin necesi
 const { currentUser } = useContext(CurrentUserContext);
 // Usa currentUser._id para saber si la tarjeta le pertenece al usuario
 ```
+
+---
+
+## Diseño UI
+
+### Fondo de la página principal (`BeamsBackground`)
+
+La vista principal usa un fondo oscuro generado con tres gradientes radiales CSS superpuestos sobre el color base `#0a0a0f`:
+- Azul eléctrico (hsl 210) en el cuadrante superior-izquierdo
+- Púrpura (hsl 260) en el inferior-derecho
+- Cian (hsl 190) en la parte superior-central
+
+El componente `BeamsBackground` devuelve un `<div>` con `position: fixed; inset: 0` para cubrir siempre el viewport completo sin importar el scroll. Tiene `z-index: 0` y `pointer-events: none` para no interferir con los elementos interactivos.
+
+El contenido principal (`main.content`) tiene `position: relative; z-index: 1` para apilarse encima del fondo. El `Header` usa `z-index: 10` y el `Footer` usa `z-index: 2` para garantizar que siempre sean visibles.
+
+### Layout split-panel en páginas de autenticación
+
+`Login` y `Register` usan un layout de dos columnas dentro de una tarjeta centrada (`max-width: 860px`):
+
+```
+┌──────────────────────────────────────────────────┐
+│   Panel izquierdo (oscuro)  │  Panel derecho      │
+│   Logo + tagline + glow     │  Formulario claro   │
+│   radial gradient           │  (#f8f8f8)          │
+└──────────────────────────────────────────────────┘
+```
+
+En mobile (`max-width: 600px`) el panel izquierdo se oculta con `display: none` y solo se muestra el formulario.
+
+### Cabecera en páginas de autenticación
+
+`Header.jsx` detecta si la ruta actual es `/signin` o `/signup` con `useLocation()` y **oculta los links de navegación** en esas páginas. Solo muestra el logo, manteniendo la cabecera limpia durante el flujo de autenticación.
+
+---
+
+## CSS — arquitectura de importaciones
+
+Todo el CSS se centraliza en `src/index.css`, que importa cada archivo en orden usando `@import`:
+
+```css
+/* index.css */
+@import url(./assets/vendor/normalize.css);
+@import url(./assets/blocks/page.css);
+@import url(./components/Header/Header.css);
+/* ... etc */
+```
+
+**Regla crítica:** las sentencias `@import` deben ir al principio del archivo, antes de cualquier otra regla CSS. Si se coloca una regla (`@keyframes`, selectores, etc.) antes de un `@import`, ese import y todos los siguientes son **ignorados** por la especificación CSS. En desarrollo con Vite esto puede pasar desapercibido porque el dev server inyecta CSS via JavaScript, pero en el build de producción (Rollup) los imports inválidos se descartan completamente, dejando la app sin estilos.
 
 ---
 
