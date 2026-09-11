@@ -27,6 +27,74 @@ body {
   margin: 0; /* sin márgenes raros */
 }
 
+/* Pantalla de carga mientras se verifica el token guardado — puede
+   tardar por el cold start de Render, así que se ve intencional en
+   vez de una espera "trabada". */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0d0d;
+}
+
+.preloader__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.preloader__logo {
+  max-width: 170px;
+  height: auto;
+  animation: preloader-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes preloader-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.preloader__spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #c1622f;
+  animation: preloader-spin 0.9s linear infinite;
+}
+
+@keyframes preloader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.preloader__hint {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader__logo {
+    animation: none;
+  }
+}
+
 /* Layout de la app: Header arriba, Footer abajo */
 .app {
   flex: 1;

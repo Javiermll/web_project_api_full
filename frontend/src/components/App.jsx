@@ -26,6 +26,7 @@ import {
   getToken,
   login,
 } from "../utils/auth.js";
+import logo from "../assets/images/Logo.png";
 
 const saveToken = (token) => localStorage.setItem("jwt", token);
 
@@ -164,7 +165,18 @@ function AppContent() {
     navigate("/signin", { replace: true });
   };
 
-  if (checkingToken) return <div className="preloader">Cargando...</div>;
+  if (checkingToken) {
+    return (
+      <div className="preloader">
+        <AuthMosaicBackground />
+        <div className="preloader__content">
+          <img src={logo} alt="Around The U.S." className="preloader__logo" />
+          <div className="preloader__spinner" />
+          <p className="preloader__hint">Conectando con el servidor…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <CurrentUserContext.Provider value={{ currentUser }}>

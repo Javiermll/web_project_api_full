@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isAuthenticated, register } from "../../utils/auth.js"; // Importa la función correcta
 import api from "../../utils/apiInstance";
+import useSlowSubmitHint from "../../hooks/useSlowSubmitHint.js";
 import logo from "../../assets/images/Logo.png";
 import "./Register.css";
 
@@ -17,6 +18,7 @@ export default function Register({ onResult }) {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const showSlowHint = useSlowSubmitHint(submitting);
 
   useEffect(() => {
     if (isAuthenticated()) navigate("/", { replace: true });
@@ -89,9 +91,17 @@ export default function Register({ onResult }) {
             </button>
           </div>
           <button type="submit" className="register__submit" disabled={submitting}>
+            {submitting && <span className="register__submit-spinner" />}
             {submitting ? "Registrando..." : "Crear cuenta"}
           </button>
         </form>
+
+        {showSlowHint && (
+          <p className="register__slow-hint">
+            El servidor estaba dormido y se está despertando — puede tardar
+            unos segundos. Gracias por tu paciencia 🌙
+          </p>
+        )}
 
         <p className="register__hint">
           ¿Ya eres miembro?{" "}

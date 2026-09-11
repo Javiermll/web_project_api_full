@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isAuthenticated } from "../../utils/auth.js";
+import useSlowSubmitHint from "../../hooks/useSlowSubmitHint.js";
 import logo from "../../assets/images/Logo.png";
 import "./Login.css";
 
@@ -16,6 +17,7 @@ export default function Login({ onResult, onSubmit }) {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const showSlowHint = useSlowSubmitHint(submitting);
 
   // Redirigir si ya hay sesión
   useEffect(() => {
@@ -89,8 +91,15 @@ export default function Login({ onResult, onSubmit }) {
           </div>
 
           <button className="login__submit" type="submit" disabled={submitting}>
+            {submitting && <span className="login__submit-spinner" />}
             {submitting ? "Entrando..." : "Iniciar sesión"}
           </button>
+          {showSlowHint && (
+            <p className="login__slow-hint">
+              El servidor estaba dormido y se está despertando — puede
+              tardar unos segundos. Gracias por tu paciencia 🌙
+            </p>
+          )}
           <p className="login__hint">
             ¿Aún no eres miembro?{" "}
             <Link to="/signup" viewTransition>
