@@ -7,10 +7,9 @@ import RemoveCard from "../RemoveCard/RemoveCard";
 import EditAvatar from "../EditAvatar/EditAvatar";
 import Card from "../Card/Card";
 import avatar from "../../assets/images/JacquesC.jpg";
-import editIcon from "../../assets/images/Vector1.png";
-import addIcon from "../../assets/images/Add_Button.png";
 import trashIcon from "../../assets/images/Trash.svg";
 import { BeamsBackground } from "../BeamsBackground/BeamsBackground";
+import { PlusIcon, PencilIcon } from "../icons/Icons.jsx";
 import "./Main.css";
 
 function Main({
@@ -102,11 +101,7 @@ function Main({
             className="profile__avatar"
           />
           <div className="profile__avatar-overlay" onClick={openAvatarPopup}>
-            <img
-              src={editIcon}
-              alt="Editar avatar"
-              className="profile__avatar-edit-icon"
-            />
+            <PencilIcon size={22} />
           </div>
         </div>
         <div className="profile__info">
@@ -114,17 +109,18 @@ function Main({
           <p className="profile__occupation">{currentUser.about}</p>
           <button
             className="profile__edit-button"
+            aria-label="Editar perfil"
             onClick={openEditProfilePopup}
           >
-            <img
-              src={editIcon}
-              alt="Editar perfil"
-              className="profile__edit-icon"
-            />
+            <PencilIcon size={12} />
           </button>
         </div>
-        <button className="profile__add-button" onClick={openAddCardPopup}>
-          <img src={addIcon} alt="Add Button" className="profile__add-icon" />
+        <button
+          className="profile__add-button"
+          aria-label="Agregar lugar"
+          onClick={openAddCardPopup}
+        >
+          <PlusIcon size={20} />
         </button>
       </section>
       <section>

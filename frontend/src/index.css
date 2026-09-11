@@ -1,5 +1,6 @@
 @import url(./assets/vendor/normalize.css);
 
+@import url(./assets/blocks/themes.css);
 @import url(./assets/blocks/page.css);
 
 @import url(./components/Header/Header.css);

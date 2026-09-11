@@ -7,7 +7,6 @@ html,
 body,
 #root {
   height: 100%;
-  justify-items: center;
 }
 
 /* Fondo negro sin usar flex en <body> */
@@ -47,5 +46,56 @@ body {
     /* Evita romper el layout en mobile */
     min-height: 100vh;
     display: flex;
+  }
+}
+
+/* Transición suave entre Landing/Login/Register (usa la View Transitions
+   API nativa vía el prop `viewTransition` de React Router). La página
+   saliente se achica y se desvanece; la entrante aparece un poco más
+   grande y se asienta — da sensación de "despegar" desde el mismo lugar
+   en vez de un corte abrupto. */
+::view-transition-old(root) {
+  animation: page-transition-out 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: page-transition-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-transition-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes page-transition-in {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* El mosaico de fondo (AuthMosaicBackground) vive fuera de las páginas y
+   nunca se desmonta al navegar entre Landing/Login/Register — se excluye
+   del cross-fade para que siga moviéndose sin cortes durante la transición. */
+::view-transition-old(auth-mosaic-bg),
+::view-transition-new(auth-mosaic-bg) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 }

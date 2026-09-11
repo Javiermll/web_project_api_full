@@ -33,21 +33,17 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 50%;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 
 .profile__image-container:hover .profile__avatar-overlay {
   opacity: 1;
-}
-
-.profile__avatar-edit-icon {
-  width: 26px;
-  height: 26px;
-  pointer-events: none;
 }
 
 .profile__info {
@@ -64,11 +60,12 @@
 
   max-width: 375px;
   height: 100%;
+  font-family: var(--font-heading, inherit);
   font-weight: 500;
   font-size: 42px;
   line-height: 48px;
 
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 22px 0 0;
 
   text-overflow: ellipsis;
@@ -84,7 +81,7 @@
   font-size: 18px;
   line-height: 22px;
 
-  color: #ffffff;
+  color: var(--text-secondary);
   margin: 16px 0 30px 0;
 
   text-overflow: ellipsis;
@@ -101,49 +98,50 @@
   align-items: center;
 
   background-color: transparent;
-  border: 1px solid white;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-button);
+  color: var(--accent);
+  cursor: pointer;
 
-  max-width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
 
-  margin: 39px 0 0 18px;
-  padding: 3px;
+  margin: 35px 0 0 18px;
+  padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .profile__edit-button:hover {
-  opacity: 0.6;
-}
-
-.profile__edit-icon {
-  object-fit: contain; /* Mantiene proporciones de la imagen */
+  background-color: var(--accent);
+  color: #fff;
 }
 
 .profile__add-button {
   display: flex;
   align-self: center;
-  object-fit: cover;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 
-  width: 150px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
 
   background-color: transparent;
-  border: none;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-button);
+  color: var(--accent);
+  box-shadow: var(--shadow-soft);
   cursor: pointer;
 
   margin: 13px 0 14px 0;
   padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 
 .profile__add-button:hover {
-  opacity: 0.6;
-}
-
-.profile__add-icon {
-  box-sizing: border-box;
-  border: none;
-
-  height: 50px;
+  background-color: var(--accent);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 @media screen and (min-width: 320px) and (max-width: 544px) {
@@ -188,10 +186,8 @@
   }
   .profile__edit-button {
     margin: 4px 0 0 10px;
-    padding: 2px;
-
-    max-width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
   }
   .profile__occupation {
     font-size: 14px;
@@ -201,17 +197,13 @@
     margin: 14px 0 36px 0;
   }
   .profile__add-button {
-    content: url(../images/Add_Button2.png);
     display: flex;
     align-self: center;
 
     width: 290px;
+    height: 48px;
 
     margin: 0;
-    padding: 0;
-  }
-  .profile__add-icon {
-    width: 100%;
   }
 }
 
@@ -226,8 +218,5 @@
   .profile__add-button {
     width: 110px;
     margin-right: auto;
-  }
-  .profile__add-icon {
-    width: 100%;
   }
 }

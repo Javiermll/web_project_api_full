@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isAuthenticated, register } from "../../utils/auth.js"; // Importa la función correcta
 import api from "../../utils/apiInstance";
+import logo from "../../assets/images/Logo.png";
 import "./Register.css";
 
 const EyeOpen = (
-  <svg width="20" height="20" fill="#fff" viewBox="0 0 20 20">
+  <svg width="20" height="20" fill="#999" viewBox="0 0 20 20">
     <path d="M10 4C5 4 1.73 8.11 1.73 10s3.27 6 8.27 6 8.27-4.11 8.27-6S15 4 10 4zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6a2 2 0 100 4 2 2 0 000-4z" />
   </svg>
 );
@@ -47,15 +48,7 @@ export default function Register({ onResult }) {
   return (
     <main className="register">
       <div className="register__card">
-      <div className="register__panel">
-        <div className="register__icon" />
-        <p className="register__panel-tagline">
-          Únete a la comunidad,<br />explora el mundo.
-        </p>
-        <p className="register__panel-sub">Around The U.S. — Tu red de fotografía</p>
-      </div>
-
-      <div className="register__form-panel">
+        <img src={logo} alt="Around The U.S." className="register__logo" />
         <h1 className="register__title">Crea tu cuenta</h1>
         <p className="register__subtitle">Empieza a compartir tus lugares favoritos</p>
 
@@ -101,9 +94,11 @@ export default function Register({ onResult }) {
         </form>
 
         <p className="register__hint">
-          ¿Ya eres miembro? <Link to="/signin">Inicia sesión aquí</Link>
+          ¿Ya eres miembro?{" "}
+          <Link to="/signin" viewTransition>
+            Inicia sesión aquí
+          </Link>
         </p>
-      </div>
       </div>
     </main>
   );

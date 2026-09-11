@@ -7,12 +7,13 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
 import Header from "./Header/Header.jsx";
 import Footer from "./Footer/Footer.jsx";
 import Main from "./Main/Main.jsx";
 import Login from "./Login/Login.jsx";
 import Register from "./Register/Register.jsx";
+import Landing from "./Landing/Landing.jsx";
+import AuthMosaicBackground from "./AuthMosaicBackground/AuthMosaicBackground.jsx";
 import InfoTooltip from "./InfoTooltip/InfoTooltip.jsx";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import api from "../utils/apiInstance.js";
@@ -43,6 +44,16 @@ function AppContent() {
   const location = useLocation();
   const isAuthPage =
     location.pathname === "/signin" || location.pathname === "/signup";
+  const isLandingPage = location.pathname === "/" && !isAuthenticated();
+
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "clasico"
+  );
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const onOpenPopup = (cfg) => setPopup(cfg);
   const onClosePopup = () => setPopup(null);
@@ -158,13 +169,21 @@ function AppContent() {
   return (
     <CurrentUserContext.Provider value={{ currentUser }}>
       <div className="app">
-        <Header email={currentUser.email} onSignOut={handleSignOut} />
+        {(isAuthPage || isLandingPage) && <AuthMosaicBackground />}
+        {!isAuthPage && !isLandingPage && (
+          <Header
+            email={currentUser.email}
+            onSignOut={handleSignOut}
+            theme={theme}
+            onThemeChange={setTheme}
+          />
+        )}
         <main className="main">
           <Routes>
             <Route
               path="/"
               element={
-                <ProtectedRoute>
+                isAuthenticated() ? (
                   <Main
                     cards={cards}
                     currentUser={currentUser}
@@ -177,7 +196,9 @@ function AppContent() {
                     onClosePopup={onClosePopup}
                     popup={popup}
                   />
-                </ProtectedRoute>
+                ) : (
+                  <Landing />
+                )
               }
             />
             <Route
@@ -210,7 +231,7 @@ function AppContent() {
             />
           </Routes>
         </main>
-        {!isAuthPage && <Footer />}
+        {!isAuthPage && !isLandingPage && <Footer />}
         <InfoTooltip
           isOpen={tooltip.open}
           success={tooltip.success}

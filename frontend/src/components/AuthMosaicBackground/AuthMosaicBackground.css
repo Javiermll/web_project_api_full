@@ -1,0 +1,84 @@
+.auth-mosaic {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #0d0d0d;
+  /* Se excluye del cross-fade de la View Transitions API (ver page.css)
+     para que nunca "parpadee" al navegar entre Landing/Login/Register. */
+  view-transition-name: auth-mosaic-bg;
+}
+
+.auth-mosaic__grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 0 6px;
+}
+
+.auth-mosaic__column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: auth-mosaic-scroll 42s linear infinite;
+  will-change: transform;
+}
+
+.auth-mosaic__column--reverse {
+  animation-direction: reverse;
+}
+
+.auth-mosaic__column:nth-child(2) {
+  animation-duration: 56s;
+}
+.auth-mosaic__column:nth-child(3) {
+  animation-duration: 48s;
+}
+.auth-mosaic__column:nth-child(4) {
+  animation-duration: 62s;
+}
+
+@keyframes auth-mosaic-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.auth-mosaic__tile {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.auth-mosaic__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 10, 0.72) 0%,
+    rgba(10, 10, 10, 0.5) 45%,
+    rgba(10, 10, 10, 0.85) 100%
+  );
+}
+
+@media (max-width: 640px) {
+  .auth-mosaic__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .auth-mosaic__tile {
+    height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-mosaic__column {
+    animation: none;
+  }
+}

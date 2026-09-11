@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isAuthenticated } from "../../utils/auth.js";
+import logo from "../../assets/images/Logo.png";
 import "./Login.css";
 
 const EyeOpen = (
-  <svg width="20" height="20" fill="#fff" viewBox="0 0 20 20">
+  <svg width="20" height="20" fill="#999" viewBox="0 0 20 20">
     <path d="M10 4C5 4 1.73 8.11 1.73 10s3.27 6 8.27 6 8.27-4.11 8.27-6S15 4 10 4zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6a2 2 0 100 4 2 2 0 000-4z" />
   </svg>
 );
@@ -41,16 +42,8 @@ export default function Login({ onResult, onSubmit }) {
   return (
     <section className="login">
       <div className="login__card">
-      <div className="login__panel">
-        <div className="login__icon" />
-        <p className="login__panel-tagline">
-          Comparte momentos,<br />descubre lugares.
-        </p>
-        <p className="login__panel-sub">Around The U.S. — Tu red de fotografía</p>
-      </div>
-
-      <div className="login__form-panel">
         <form className="login__form" onSubmit={handleSubmit} noValidate>
+          <img src={logo} alt="Around The U.S." className="login__logo" />
           <h2 className="login__title">Bienvenido de vuelta</h2>
           <p className="login__subtitle">Ingresa tus datos para continuar</p>
 
@@ -99,10 +92,12 @@ export default function Login({ onResult, onSubmit }) {
             {submitting ? "Entrando..." : "Iniciar sesión"}
           </button>
           <p className="login__hint">
-            ¿Aún no eres miembro? <Link to="/signup">Regístrate aquí</Link>
+            ¿Aún no eres miembro?{" "}
+            <Link to="/signup" viewTransition>
+              Regístrate aquí
+            </Link>
           </p>
         </form>
-      </div>
       </div>
     </section>
   );

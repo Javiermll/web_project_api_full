@@ -1,15 +1,13 @@
 // src/components/Header/Header.jsx
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { isAuthenticated } from "../../utils/auth.js";
+import ThemeSwitcher from "../ThemeSwitcher/ThemeSwitcher.jsx";
 import "./Header.css";
 import logo from "../../assets/images/Logo.png";
 
-function Header({ email, onSignOut }) {
+function Header({ email, onSignOut, theme, onThemeChange }) {
   const loggedIn = isAuthenticated();
   const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation();
-  const isAuthPage = location.pathname === "/signin" || location.pathname === "/signup";
 
   const toggleMenu = () => setMenuOpen((o) => !o);
   const closeMenu = () => setMenuOpen(false);
@@ -19,13 +17,14 @@ function Header({ email, onSignOut }) {
       <div className="header__container">
         <img src={logo} alt="Logo Around The U.S." className="header__logo" />
 
-        {loggedIn && !isAuthPage && (
+        {loggedIn && (
           <>
             <nav className="header__nav header__nav--desktop">
               {email && <span className="header__email">{email}</span>}
               <button type="button" className="header__logout header__link" onClick={onSignOut}>
                 Cerrar sesión
               </button>
+              <ThemeSwitcher theme={theme} onThemeChange={onThemeChange} />
             </nav>
             <button
               type="button"
@@ -64,6 +63,7 @@ function Header({ email, onSignOut }) {
             >
               Cerrar sesión
             </button>
+            <ThemeSwitcher theme={theme} onThemeChange={onThemeChange} />
           </div>
         </div>
       )}

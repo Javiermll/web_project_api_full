@@ -1,0 +1,112 @@
+/* Sistema de temas visuales para la vista autenticada.
+   Cada bloque redefine las mismas variables; los componentes
+   (BeamsBackground, perfil, footer) las consumen con var(...). */
+
+:root {
+  --app-bg: radial-gradient(
+      ellipse 80% 60% at 20% 40%,
+      hsla(210, 85%, 45%, 0.25) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 70%,
+      hsla(260, 80%, 50%, 0.2) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 55% 20%,
+      hsla(190, 90%, 40%, 0.15) 0%,
+      transparent 60%
+    ),
+    #0a0a0f;
+  --accent: #6366f1;
+  --accent-hover: #4f52d6;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --header-bg: #211b16;
+  --header-border: #c1622f;
+  --header-logo-filter: none;
+  --font-heading: "Space Grotesk", "Segoe UI", sans-serif;
+  --radius-button: 10px;
+  --shadow-soft: 0 8px 24px rgba(99, 102, 241, 0.28);
+}
+
+/* Viaje: la misma paleta cálida de las pantallas de acceso */
+[data-theme="viaje"] {
+  --app-bg: linear-gradient(180deg, #faf7f2 0%, #f2ece0 100%);
+  --accent: #c1622f;
+  --accent-hover: #a34f24;
+  --text-primary: #241f18;
+  --text-secondary: #6b6357;
+  --header-bg: #f7f1e6;
+  --header-border: #c1622f;
+  --header-logo-filter: invert(1);
+  --font-heading: "Fraunces", Georgia, serif;
+  --radius-button: 999px;
+  --shadow-soft: 0 8px 20px rgba(193, 98, 47, 0.2);
+}
+
+/* Océano: teal profundo, inspirado en costas y viajes en barco */
+[data-theme="oceano"] {
+  --app-bg: radial-gradient(
+      ellipse 70% 60% at 25% 20%,
+      rgba(45, 212, 191, 0.22) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 80%,
+      rgba(14, 116, 144, 0.35) 0%,
+      transparent 65%
+    ),
+    #06181f;
+  --accent: #2dd4bf;
+  --accent-hover: #17a898;
+  --text-primary: #eafffb;
+  --text-secondary: rgba(234, 255, 251, 0.65);
+  --header-bg: #072830;
+  --header-border: #2dd4bf;
+  --header-logo-filter: none;
+  --font-heading: "Outfit", "Segoe UI", sans-serif;
+  --radius-button: 14px;
+  --shadow-soft: 0 8px 24px rgba(45, 212, 191, 0.28);
+}
+
+/* Atardecer: mauve y ámbar, un cielo de fin de día en ruta */
+[data-theme="atardecer"] {
+  --app-bg: radial-gradient(
+      ellipse 70% 55% at 25% 25%,
+      rgba(224, 142, 69, 0.35) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 80% 75%,
+      rgba(154, 52, 89, 0.35) 0%,
+      transparent 65%
+    ),
+    #251320;
+  --accent: #e08e45;
+  --accent-hover: #c1731f;
+  --text-primary: #fff3ea;
+  --text-secondary: rgba(255, 243, 234, 0.65);
+  --header-bg: #2f1626;
+  --header-border: #e08e45;
+  --header-logo-filter: none;
+  --font-heading: "Playfair Display", Georgia, serif;
+  --radius-button: 6px;
+  --shadow-soft: 0 10px 26px rgba(224, 142, 69, 0.32);
+}
+
+/* Mono: minimalista, claro, un solo acento en negro */
+[data-theme="mono"] {
+  --app-bg: #f4f4f2;
+  --accent: #111111;
+  --accent-hover: #000000;
+  --text-primary: #111111;
+  --text-secondary: #6b6b6b;
+  --header-bg: #ffffff;
+  --header-border: #111111;
+  --header-logo-filter: invert(1);
+  --font-heading: "Space Mono", "Courier New", monospace;
+  --radius-button: 0px;
+  --shadow-soft: none;
+}
