@@ -25,18 +25,25 @@ frontend/
 ├── public/                        # Archivos estáticos (favicon, etc.)
 ├── src/
 │   ├── components/
-│   │   ├── App.jsx                # Raíz: estado global, routing, handlers
-│   │   ├── ProtectedRoute/        # HOC que redirige a /signin si no hay sesión
-│   │   ├── Header/                # Barra superior: logo, email, cerrar sesión
-│   │   ├── Footer/                # Pie de página (oculto en páginas de auth)
-│   │   ├── Main/                  # Vista principal autenticada con tarjetas
-│   │   ├── Card/                  # Componente de tarjeta individual
-│   │   ├── Login/                 # Página de inicio de sesión — layout split-panel (panel izquierdo oscuro + formulario derecho claro)
-│   │   ├── Register/              # Página de registro — mismo layout split-panel que Login
-│   │   ├── BeamsBackground/       # Fondo estático de la página principal: gradientes radiales azul/púrpura/cian sobre #0a0a0f
-│   │   └── InfoTooltip/           # Modal de resultado (éxito/error)
+│   │   ├── App.jsx                # Raíz: estado global, routing, handlers, tema activo
+│   │   ├── Landing/                # Pantalla de bienvenida antes del login (sin sesión)
+│   │   ├── AuthMosaicBackground/   # Mosaico de fotos animado — fondo fijo compartido por Landing/Login/Register
+│   │   ├── Header/                 # Barra superior: logo, email, cerrar sesión, selector de tema (solo con sesión)
+│   │   ├── ThemeSwitcher/          # Selector de los 5 temas visuales, persistido en localStorage
+│   │   ├── Footer/                 # Pie de página (oculto en landing y páginas de auth)
+│   │   ├── Main/                   # Vista principal autenticada con tarjetas
+│   │   ├── Card/                   # Componente de tarjeta individual
+│   │   ├── Login/                  # Página de inicio de sesión — tarjeta flotante sobre el mosaico
+│   │   ├── Register/               # Página de registro — mismo formato de tarjeta que Login
+│   │   ├── BeamsBackground/        # Fondo de la vista principal — lee `var(--app-bg)` del tema activo
+│   │   ├── icons/                  # Íconos SVG en línea (currentColor, se adaptan al tema)
+│   │   └── InfoTooltip/            # Modal de resultado (éxito/error)
 │   ├── contexts/
 │   │   └── CurrentUserContext.js  # Context de React con los datos del usuario actual
+│   ├── hooks/
+│   │   └── useSlowSubmitHint.js   # Muestra un aviso si un submit tarda (cold start de Render)
+│   ├── assets/blocks/
+│   │   └── themes.css             # Variables CSS de los 5 temas visuales
 │   └── utils/
 │       ├── apiInstance.js         # Clase Api: todas las llamadas HTTP al backend
 │       └── auth.js                # Funciones de autenticación y manejo del token JWT
@@ -61,13 +68,16 @@ App.jsx (estado central)
   ├── currentUser {}   → datos del usuario logueado
   ├── cards []         → lista de tarjetas
   ├── email ""         → email mostrado en el Header
+  ├── theme ""         → tema visual activo, persistido en localStorage
   └── tooltip {}       → estado del modal de resultado
       │
       ├── CurrentUserContext.Provider  → pasa currentUser a cualquier componente
       │
-      ├── <Header />           → recibe email y onSignOut
+      ├── <Header />           → recibe email, onSignOut, theme y onThemeChange
+      │   └── <ThemeSwitcher />
       ├── <Main />             → recibe cards, handlers de CRUD
       │   └── <Card />
+      ├── <Landing />          → se muestra en "/" cuando no hay sesión
       ├── <Login />            → solo dispara onSubmit, no llama al API
       ├── <Register />         → solo dispara onSubmit, no llama al API
       └── <InfoTooltip />      → recibe open/success/message
@@ -111,7 +121,7 @@ Al montar `App.jsx` se ejecuta un `useEffect` con este flujo:
            finally → setCheckingToken(false) → renderiza la app
 ```
 
-Mientras `checkingToken` es `true`, se muestra `<div className="preloader">Cargando...</div>` para evitar un parpadeo de contenido no autenticado antes de verificar la sesión.
+Mientras `checkingToken` es `true`, se muestra una pantalla de carga con marca propia (logo con pulso, spinner y mensaje "Conectando con el servidor…" sobre el mismo mosaico animado de la landing) para evitar un parpadeo de contenido no autenticado antes de verificar la sesión, y para que la espera del cold start de Render se sienta intencional en vez de una app trabada.
 
 ---
 
@@ -144,16 +154,17 @@ La URL base (`VITE_MAIN_API_BASE_URL`) se lee desde las variables de entorno de 
 `react-router-dom` v7 gestiona tres rutas en `App.jsx`:
 
 ```
-/          → <ProtectedRoute> envuelve <Main />
-               Si no hay sesión → redirige a /signin
+/          → isAuthenticated() ? <Main /> : <Landing />
 /signin    → <Login />
 /signup    → <Register />
 *          → redirige a / si autenticado, o a /signin si no
 ```
 
-`ProtectedRoute` es un componente wrapper que comprueba `isAuthenticated()` y devuelve `<Navigate to="/signin" replace />` si no hay token, o los hijos si sí lo hay.
+La ruta raíz decide directamente entre `<Main />` y `<Landing />` según `isAuthenticated()`, sin necesidad de un componente wrapper de redirección: si hay sesión se muestra la vista principal, y si no, la landing con el mosaico animado. Esto reemplazó al antiguo `ProtectedRoute`, que quedó sin uso una vez que la landing pasó a ser el destino natural para visitantes sin sesión.
 
-El `Footer` solo se renderiza cuando `location.pathname` no es `/signin` ni `/signup`, replicando el comportamiento del diseño original.
+Los links "Crear cuenta" / "Iniciar sesión" de la landing, y los links cruzados entre Login y Register, usan el prop `viewTransition` de React Router para animar la navegación con la View Transitions API nativa del navegador (ver sección de Diseño UI).
+
+El `Header` y el `Footer` no se renderizan en la landing ni en las páginas de auth (`/signin`, `/signup`) — solo aparecen en la vista principal autenticada.
 
 ---
 
@@ -178,34 +189,48 @@ const { currentUser } = useContext(CurrentUserContext);
 
 ## Diseño UI
 
-### Fondo de la página principal (`BeamsBackground`)
+### Landing y mosaico animado (`Landing`, `AuthMosaicBackground`)
 
-La vista principal usa un fondo oscuro generado con tres gradientes radiales CSS superpuestos sobre el color base `#0a0a0f`:
-- Azul eléctrico (hsl 210) en el cuadrante superior-izquierdo
-- Púrpura (hsl 260) en el inferior-derecho
-- Cian (hsl 190) en la parte superior-central
+Los visitantes sin sesión llegan primero a `Landing`: logo, título, subtítulo y dos botones ("Crear cuenta" / "Iniciar sesión") sobre un mosaico de fotos con scroll infinito.
 
-El componente `BeamsBackground` devuelve un `<div>` con `position: fixed; inset: 0` para cubrir siempre el viewport completo sin importar el scroll. Tiene `z-index: 0` y `pointer-events: none` para no interferir con los elementos interactivos.
+El mosaico vive en un componente aparte, `AuthMosaicBackground`, montado directamente en `App.jsx` (no dentro de cada página) con `position: fixed; inset: 0`. Al vivir fuera de las rutas, **nunca se desmonta** al navegar entre Landing, Login y Register — sigue moviéndose de forma continua durante toda la transición. Son 4 columnas de fotos duplicadas (para el loop sin cortes), cada una con una duración y dirección de animación distinta, más un degradado oscuro encima para que el texto se lea bien sobre cualquier foto.
 
-El contenido principal (`main.content`) tiene `position: relative; z-index: 1` para apilarse encima del fondo. El `Header` usa `z-index: 10` y el `Footer` usa `z-index: 2` para garantizar que siempre sean visibles.
+### Transiciones entre pantallas
 
-### Layout split-panel en páginas de autenticación
+La navegación entre Landing, Login y Register usa el prop `viewTransition` de `<Link>` (View Transitions API nativa del navegador, disponible en React Router v7). La página saliente se achica y desvanece; la entrante aparece un poco más grande y se asienta. El mosaico de fondo se excluye explícitamente de esa animación (vía `view-transition-name` + `animation: none` en CSS) para que no parpadee, ya que de todas formas nunca se remonta.
 
-`Login` y `Register` usan un layout de dos columnas dentro de una tarjeta centrada (`max-width: 860px`):
+### Tarjetas flotantes de Login/Register
 
-```
-┌──────────────────────────────────────────────────┐
-│   Panel izquierdo (oscuro)  │  Panel derecho      │
-│   Logo + tagline + glow     │  Formulario claro   │
-│   radial gradient           │  (#f8f8f8)          │
-└──────────────────────────────────────────────────┘
-```
+`Login` y `Register` ya no usan un layout de dos columnas: son una tarjeta centrada y flotante (`max-width: 400px`) sobre el mosaico compartido, con el logo (invertido a oscuro con CSS `filter: invert(1)` para verse sobre el fondo claro de la tarjeta), título y subtítulo centrados, y una animación de entrada (`fade` + `scale`).
 
-En mobile (`max-width: 600px`) el panel izquierdo se oculta con `display: none` y solo se muestra el formulario.
+### Sistema de temas (`themes.css`, `ThemeSwitcher`)
 
-### Cabecera en páginas de autenticación
+La vista principal autenticada tiene 5 temas visuales seleccionables, cada uno con su propia paleta, tipografía y forma de botones:
 
-`Header.jsx` detecta si la ruta actual es `/signin` o `/signup` con `useLocation()` y **oculta los links de navegación** en esas páginas. Solo muestra el logo, manteniendo la cabecera limpia durante el flujo de autenticación.
+| Tema | Tipografía | Forma de botones |
+|------|-----------|-------------------|
+| Clásico | Space Grotesk | Redondeada (10px) |
+| Viaje | Fraunces (serif) | Píldora |
+| Océano | Outfit | Redondeada (14px) |
+| Atardecer | Playfair Display (serif) | Casi recta (6px) |
+| Mono | Space Mono | Recta (0px) |
+
+Cada tema define un mismo conjunto de variables CSS (`--app-bg`, `--accent`, `--text-primary`, `--header-bg`, `--font-heading`, `--radius-button`, etc.) bajo un selector `[data-theme="..."]` en `assets/blocks/themes.css`. `App.jsx` guarda el tema activo en `localStorage` y lo aplica con `document.documentElement.setAttribute("data-theme", theme)`. Componentes como `BeamsBackground`, el perfil y el `Header` consumen esas variables con `var(...)` en vez de colores fijos, así cambiar de tema no requiere lógica condicional en JavaScript.
+
+`ThemeSwitcher` (visible solo con sesión iniciada, junto al email y "Cerrar sesión") muestra un botón circular con el color del tema activo; al hacer clic despliega los 5 temas disponibles como opciones.
+
+Los íconos de la interfaz (agregar tarjeta, editar perfil) son SVG en línea (`components/icons/Icons.jsx`) con `stroke="currentColor"`, así heredan el color del tema automáticamente sin necesitar filtros CSS.
+
+### Cabecera
+
+`Header` no se renderiza en la landing ni en `/signin` / `/signup` — en esas pantallas el mosaico y las tarjetas flotantes ocupan toda la pantalla sin una barra superior. En la vista principal autenticada, el `Header` usa `background: var(--header-bg)` y una línea inferior con `var(--header-border)`, ambas definidas por el tema activo.
+
+### Estado de carga durante el cold start de Render
+
+Dado que el backend gratuito de Render "duerme" tras un período de inactividad, dos pantallas comunican la espera en vez de dejar al usuario sin señales:
+
+- **Al abrir la app** (verificación de sesión guardada): pantalla de carga de marca propia con logo pulsante, spinner y el mensaje "Conectando con el servidor…", sobre el mismo mosaico animado.
+- **Al enviar Login/Register**: el botón muestra un spinner junto al texto, y si la respuesta tarda más de ~3.5 segundos (hook `useSlowSubmitHint`), aparece un aviso explicando que el servidor se está despertando.
 
 ---
 

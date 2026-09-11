@@ -233,6 +233,7 @@ Los params de URL también se validan (ej: que `cardId` sea un hex de 24 caracte
 |--------|------|------|-----------|
 | POST | `/signup` | `{ email, password, name?, about?, avatar? }` | `201 { success, data: { usuario } }` |
 | POST | `/signin` | `{ email, password }` | `200 { token }` |
+| GET | `/health` | — | `200 { status: "ok" }` o `503` |
 
 ### Protegidos (requieren `Authorization: Bearer <token>`)
 
@@ -259,6 +260,10 @@ Los params de URL también se validan (ej: que `cardId` sea un hex de 24 caracte
 La lógica de likes usa operadores de MongoDB directamente:
 - Like: `$addToSet` — añade el `_id` al array sin duplicados
 - Unlike: `$pull` — elimina el `_id` del array
+
+### `/health` — monitoreo externo
+
+Endpoint público sin autenticación pensado para un servicio de ping externo (tipo cron-job.org). Ejecuta `User.estimatedDocumentCount()` — una consulta real a MongoDB, no solo una respuesta estática — para que el ping cuente como actividad y evite que el cluster gratuito de Atlas se pause automáticamente tras 60 días de inactividad. Devuelve `503` si la consulta a la base de datos falla.
 
 ---
 
