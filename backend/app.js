@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cardsRoutes = require("./routes/cards");
 const usersRoutes = require("./routes/users");
 const mongoose = require("mongoose");
+const User = require("./models/user");
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middlewares/auth");
 const cors = require("cors");
@@ -44,6 +45,18 @@ app.post("/signup", createUser);
 
 app.use("/users", auth, usersRoutes);
 app.use("/cards", auth, cardsRoutes);
+
+// Endpoint para monitores externos: hace una consulta real a Mongo
+// (no solo responde estático) para que cuente como actividad ante Atlas
+// y evite el auto-pausado del cluster free tier por 60 días de inactividad.
+app.get("/health", async (req, res) => {
+  try {
+    await User.estimatedDocumentCount();
+    res.status(200).json({ status: "ok" });
+  } catch (error) {
+    res.status(503).json({ status: "error" });
+  }
+});
 
 app.use((req, res, next) => {
   const err = new Error("Recurso solicitado no se pudo encontrar");
